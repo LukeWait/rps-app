@@ -110,7 +110,6 @@ The source code for this project can be found in the GitHub repository: [https:/
 
 ## Dependencies
 For those building from source, the dependencies listed in `requirements.txt` are:
-- packaging==23.2
 - customtkinter==5.2.1
 - CTkMessagebox==2.5
 - CTkListbox==0.10
