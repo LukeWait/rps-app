@@ -27,6 +27,7 @@ import hashlib
 import os
 import re
 import pkg_resources
+import platform
 import customtkinter as ctk
 from CTkMessagebox import *
 from CTkListbox import *
@@ -268,6 +269,12 @@ class Gui(ctk.CTk):
         The lobby frame is a tabbed frame that facilitates network connections and application settings.
         The status frame displays the current state of connectivity.
         """
+        # Determine the console text size based on the operating system
+        if platform.system() == "Windows":
+            text_size = 11
+        else:
+            text_size = 10
+      
         # Configure the main frame
         self.main_frame = ctk.CTkFrame(self, corner_radius=0, width=600)
         self.main_frame.grid_rowconfigure(0, weight=1)
@@ -283,7 +290,7 @@ class Gui(ctk.CTk):
         self.game_rps_button.grid(row=0, column=0, columnspan=2, padx=(15, 7.5), pady=(10, 15), sticky="ew")
         self.game_rps_button.configure(values=["Rock", "Paper", "Scissors"])
         self.game_textbox = ctk.CTkTextbox(self.game_frame, state="disabled", width=277.5, fg_color="gray8",
-                                           font=ctk.CTkFont(family="Consolas", size=11), wrap=WORD)
+                                           font=ctk.CTkFont(family="Consolas", size=text_size), wrap=WORD)
         self.game_textbox.grid(row=1, column=0, columnspan=2, padx=(15, 7.5), pady=0, sticky="nsew")
         self.game_chatbox = ctk.CTkEntry(self.game_frame, placeholder_text="Chat here...", state="disabled")
         self.game_chatbox.grid(row=2, column=0, padx=(15, 0), pady=15, sticky="ew")
@@ -312,7 +319,7 @@ class Gui(ctk.CTk):
         self.lobby_frame.tab("Settings").grid_rowconfigure(4, weight=1)
 
         # Configure the join tab widgets
-        self.lobby_join_listbox = CTkListbox(self.lobby_frame.tab("Join"), font=("Consolas", 11), fg_color="gray8", justify="center")
+        self.lobby_join_listbox = CTkListbox(self.lobby_frame.tab("Join"), font=("Consolas", text_size), fg_color="gray8", justify="center")
         self.lobby_join_listbox.grid(row=0, column=0, columnspan=2, padx=15, pady=(5, 0), sticky="new")
         self.lobby_join_search_button = ctk.CTkButton(self.lobby_frame.tab("Join"), text="Search", width=80)
         self.lobby_join_search_button.grid(row=1, column=0, padx=15, pady=(20, 15), sticky="e")
@@ -368,7 +375,7 @@ class Gui(ctk.CTk):
         self.status_connection_label = ctk.CTkLabel(self.status_frame, text="Connection Status", font=ctk.CTkFont(size=20, weight="bold"))
         self.status_connection_label.grid(row=0, column=0, columnspan=2, padx=0, pady=15)
         self.status_textbox = ctk.CTkTextbox(self.status_frame, height=80, state="disabled", width=165, fg_color="gray8",
-                                             font=ctk.CTkFont(family="Consolas", size=11))
+                                             font=ctk.CTkFont(family="Consolas", size=text_size))
         self.status_textbox.grid(row=1, column=0, padx=(15, 0), pady=0, sticky="w")
         self.status_connection_button = ctk.CTkButton(self.status_frame, text="", fg_color="transparent", image=self.icon_disconnected, 
                                                          border_spacing=6, width=50, hover_color=("gray70", "gray30"),
