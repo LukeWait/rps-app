@@ -9,6 +9,7 @@ Date: October 8, 2023
 License: MIT License
 
 Dependencies (requirements.txt):
+packaging==23.2
 customtkinter==5.2.1
 CTkMessagebox==2.5
 CTkListbox==0.10
