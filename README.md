@@ -58,9 +58,25 @@ To install and run the application from source:
       ```
 
 3. Install the dependencies:
-    ```sh
-    pip install -r requirements.txt
-    ```
+    - **Windows**:
+      1. Install Python dependencies:
+          ```sh
+          pip install -r requirements.txt
+          ```
+     - **Linux**:
+      1. Install system dependencies:
+          ```sh
+          sudo apt-get install python3-gi
+          sudo apt-get install python3-gi-cairo gir1.2-gtk-3.0
+          sudo apt-get install libcairo2-dev
+          sudo apt install libgirepository1.0-dev
+          ```
+
+      2. Install Python dependencies:
+          ```sh
+          pip install pygobject==3.42.2
+          pip install -r requirements.txt
+          ``` 
 
 4. Run the application:
     - **Windows**:
