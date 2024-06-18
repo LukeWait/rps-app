@@ -20,12 +20,12 @@ The Rock Paper Scissors LAN App is an interactive GUI tool that allows users to 
 
 ### Executable
 #### Windows
-1. Download the `rps_app_win_v2_1_0.zip` from the [releases page](https://github.com/LukeWait/rps-app/releases).
+1. Download the latest Windows release from the [releases page](https://github.com/LukeWait/rps-app/releases).
 2. Extract the contents to a desired location.
 3. Run the `RPSApp.exe` file.
 
 #### Linux
-1. Download the `rps_app_linux_v2_1_0.zip` from the [releases page](https://github.com/LukeWait/rps-app/releases).
+1. Download the latest Linux release from the [releases page](https://github.com/LukeWait/rps-app/releases).
 2. Extract the contents to a desired location.
 3. Make the RPSApp file executable by running the following command in the terminal:
     ```sh
@@ -87,14 +87,25 @@ After running the application, you can log in with your username and password or
 
 ## Development
 ### Building Executables with PyInstaller
-To build executables for Windows, macOS, and Linux, you can use PyInstaller. I recommend using PyInstaller version 6.1.0 as it is stable and does not flag the executable as a virus. First, ensure you have PyInstaller installed:
-```sh
-pip install pyinstaller==6.1.0
-```
-Then, run the following command to create an executable:
+#### Windows
+Run the following command from the project main directory:
 ```sh
 pyinstaller --onefile --add-data "assets/images:assets/images" --add-data "assets/fonts:assets/fonts" --add-data "assets/audio:assets/audio" --add-data "data:data" --noconsole src/rps_app.py
 ```
+#### Linux
+For Linux, you need to create a hook-PIL.py file to handle the PIL library correctly. Follow these steps:
+1. Create a file named hook-PIL.py in the main directory of your project with the following content:
+    ```sh
+    from PyInstaller.utils.hooks import copy_metadata, collect_submodules
+
+    datas = copy_metadata('Pillow')
+    hiddenimports = collect_submodules('PIL')
+    ```
+2. Run the following command from the project main directory:
+    ```sh
+    pyinstaller --onefile --add-data "assets/images:assets/images" --add-data "assets/fonts:assets/fonts" --add-data "assets/audio:assets/audio" --add-data "data:data" --additional-hooks-dir=. --noconsole src/rps_app.py
+    ```
+
 This will generate the executable in the `dist` directory. It will also create a `build` directory and `.spec` file. These are used in the build process and can be safely removed.
 
 ## License
