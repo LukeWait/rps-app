@@ -174,7 +174,7 @@ class Gui(ctk.CTk):
         """Loads fonts used in the GUI from specified directories.
         """
         try:
-            ctk.FontManager.load_font(os.path.join(self.fonts_path, "HARLOWSI.ttf"))
+            ctk.FontManager.load_font(os.path.join(self.fonts_path, "HARLOWSI.TTF"))
             
         except Exception as e:
             print(f"Error:\n{str(e)}")
