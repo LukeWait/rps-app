@@ -1,1 +1,7 @@
-{\rtf1}
+customtkinter==5.2.1
+CTkMessagebox==2.5
+CTkListbox==0.10
+CTkToolTip==0.8
+Pillow==10.1.0
+gTTS==2.4.0
+playsound==1.2.2
