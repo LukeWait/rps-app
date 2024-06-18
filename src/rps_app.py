@@ -9,7 +9,6 @@ Date: October 8, 2023
 License: MIT License
 
 Dependencies (requirements.txt):
-packaging==23.2
 customtkinter==5.2.1
 CTkMessagebox==2.5
 CTkListbox==0.10
@@ -26,7 +25,7 @@ import threading
 import hashlib
 import os
 import re
-import pkg_resources
+import sys
 import platform
 import customtkinter as ctk
 from CTkMessagebox import *
@@ -37,7 +36,12 @@ from PIL import Image
 from gtts import gTTS
 from playsound import playsound
 
-base_path = pkg_resources.resource_filename(__name__, "")
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
 
 
 class Gui(ctk.CTk):
@@ -97,9 +101,16 @@ class Gui(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
 
         # Define paths to various resource directories
-        self.images_path = os.path.join(base_path, "../assets/images")
-        self.fonts_path = os.path.join(base_path, "../assets/fonts")
-        self.audio_path = os.path.join(base_path, "../assets/audio")
+        if hasattr(sys, '_MEIPASS'):
+            # In a PyInstaller bundle, use paths relative to the _MEIPASS directory
+            self.images_path = resource_path(os.path.join("assets", "images"))
+            self.fonts_path = resource_path(os.path.join("assets", "fonts"))
+            self.audio_path = resource_path(os.path.join("assets", "audio"))
+        else:
+            # In development, use paths relative to the script's directory
+            self.images_path = resource_path(os.path.join("..", "assets", "images"))
+            self.fonts_path = resource_path(os.path.join("..", "assets", "fonts"))
+            self.audio_path = resource_path(os.path.join("..", "assets", "audio"))
 
         # Load images and fonts
         self.load_images()
@@ -1032,7 +1043,12 @@ class App:
         self.client = Client(self, self.gui, self.network)
 
         # Relative path to user save data
-        self.user_data_path = os.path.join(base_path, "../data/user_data.txt")
+        if hasattr(sys, '_MEIPASS'):
+            # In a PyInstaller bundle, use paths relative to the _MEIPASS directory
+            self.user_data_path = resource_path(os.path.join("data", "user_data.txt"))
+        else:
+            # In development, use paths relative to the script's directory
+            self.user_data_path = resource_path(os.path.join("..", "data", "user_data.txt"))
 
         # User details and game variables
         self.user_profile = None
