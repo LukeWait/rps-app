@@ -25,7 +25,8 @@ import threading
 import hashlib
 import os
 import re
-import pkg_resources
+import sys
+import platform
 import customtkinter as ctk
 from CTkMessagebox import *
 from CTkListbox import *
@@ -35,7 +36,12 @@ from PIL import Image
 from gtts import gTTS
 from playsound import playsound
 
-base_path = pkg_resources.resource_filename(__name__, "")
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
 
 
 class Gui(ctk.CTk):
@@ -95,9 +101,16 @@ class Gui(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
 
         # Define paths to various resource directories
-        self.images_path = os.path.join(base_path, "../assets/images")
-        self.fonts_path = os.path.join(base_path, "../assets/fonts")
-        self.audio_path = os.path.join(base_path, "../assets/audio")
+        if hasattr(sys, '_MEIPASS'):
+            # In a PyInstaller bundle, use paths relative to the _MEIPASS directory
+            self.images_path = resource_path(os.path.join("assets", "images"))
+            self.fonts_path = resource_path(os.path.join("assets", "fonts"))
+            self.audio_path = resource_path(os.path.join("assets", "audio"))
+        else:
+            # In development, use paths relative to the script's directory
+            self.images_path = resource_path(os.path.join("..", "assets", "images"))
+            self.fonts_path = resource_path(os.path.join("..", "assets", "fonts"))
+            self.audio_path = resource_path(os.path.join("..", "assets", "audio"))
 
         # Load images and fonts
         self.load_images()
@@ -173,7 +186,7 @@ class Gui(ctk.CTk):
         """Loads fonts used in the GUI from specified directories.
         """
         try:
-            ctk.FontManager.load_font(os.path.join(self.fonts_path, "HARLOWSI.ttf"))
+            ctk.FontManager.load_font(os.path.join(self.fonts_path, "HARLOWSI.TTF"))
             
         except Exception as e:
             print(f"Error:\n{str(e)}")
@@ -267,6 +280,12 @@ class Gui(ctk.CTk):
         The lobby frame is a tabbed frame that facilitates network connections and application settings.
         The status frame displays the current state of connectivity.
         """
+        # Determine the console text size based on the operating system
+        if platform.system() == "Windows":
+            text_size = 11
+        else:
+            text_size = 10
+    
         # Configure the main frame
         self.main_frame = ctk.CTkFrame(self, corner_radius=0, width=600)
         self.main_frame.grid_rowconfigure(0, weight=1)
@@ -282,7 +301,7 @@ class Gui(ctk.CTk):
         self.game_rps_button.grid(row=0, column=0, columnspan=2, padx=(15, 7.5), pady=(10, 15), sticky="ew")
         self.game_rps_button.configure(values=["Rock", "Paper", "Scissors"])
         self.game_textbox = ctk.CTkTextbox(self.game_frame, state="disabled", width=277.5, fg_color="gray8",
-                                           font=ctk.CTkFont(family="Consolas", size=11), wrap=WORD)
+                                           font=ctk.CTkFont(family="Consolas", size=text_size), wrap=WORD)
         self.game_textbox.grid(row=1, column=0, columnspan=2, padx=(15, 7.5), pady=0, sticky="nsew")
         self.game_chatbox = ctk.CTkEntry(self.game_frame, placeholder_text="Chat here...", state="disabled")
         self.game_chatbox.grid(row=2, column=0, padx=(15, 0), pady=15, sticky="ew")
@@ -311,7 +330,7 @@ class Gui(ctk.CTk):
         self.lobby_frame.tab("Settings").grid_rowconfigure(4, weight=1)
 
         # Configure the join tab widgets
-        self.lobby_join_listbox = CTkListbox(self.lobby_frame.tab("Join"), font=("Consolas", 11), fg_color="gray8", justify="center")
+        self.lobby_join_listbox = CTkListbox(self.lobby_frame.tab("Join"), font=("Consolas", text_size), fg_color="gray8", justify="center")
         self.lobby_join_listbox.grid(row=0, column=0, columnspan=2, padx=15, pady=(5, 0), sticky="new")
         self.lobby_join_search_button = ctk.CTkButton(self.lobby_frame.tab("Join"), text="Search", width=80)
         self.lobby_join_search_button.grid(row=1, column=0, padx=15, pady=(20, 15), sticky="e")
@@ -367,7 +386,7 @@ class Gui(ctk.CTk):
         self.status_connection_label = ctk.CTkLabel(self.status_frame, text="Connection Status", font=ctk.CTkFont(size=20, weight="bold"))
         self.status_connection_label.grid(row=0, column=0, columnspan=2, padx=0, pady=15)
         self.status_textbox = ctk.CTkTextbox(self.status_frame, height=80, state="disabled", width=165, fg_color="gray8",
-                                             font=ctk.CTkFont(family="Consolas", size=11))
+                                             font=ctk.CTkFont(family="Consolas", size=text_size))
         self.status_textbox.grid(row=1, column=0, padx=(15, 0), pady=0, sticky="w")
         self.status_connection_button = ctk.CTkButton(self.status_frame, text="", fg_color="transparent", image=self.icon_disconnected, 
                                                          border_spacing=6, width=50, hover_color=("gray70", "gray30"),
@@ -1024,8 +1043,14 @@ class App:
         self.client = Client(self, self.gui, self.network)
 
         # Relative path to user save data
-        self.user_data_path = os.path.join(base_path, "../data/user_data.txt")
+        if hasattr(sys, '_MEIPASS'):
+            # In a PyInstaller bundle, use paths relative to the _MEIPASS directory
+            self.user_data_path = resource_path(os.path.join("data", "user_data.txt"))
+        else:
+            # In development, use paths relative to the script's directory
+            self.user_data_path = resource_path(os.path.join("..", "data", "user_data.txt"))
 
+        
         # User details and game variables
         self.user_profile = None
         self.opponent_username = None
