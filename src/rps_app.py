@@ -3,7 +3,7 @@
 Project: Rock Paper Scissors LAN App
 Description: Allows users to connect to other users over a local area network to play
              Rock Paper Scissors and communicate via text messages.
-Version: 2.1.0
+Version: 2.2.0
 Author: Luke Wait
 Date: October 8, 2023
 License: MIT License
