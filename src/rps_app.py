@@ -26,7 +26,6 @@ import hashlib
 import os
 import re
 import sys
-import platform
 import customtkinter as ctk
 from CTkMessagebox import *
 from CTkListbox import *
@@ -37,11 +36,41 @@ from gtts import gTTS
 from playsound import playsound
 
 def resource_path(relative_path):
+    """Finds the absolute path to a resource file, whether running as a PyInstaller bundle or in development.
+
+    Args:
+        relative_path (str): The relative path to the resource file.
+
+    Returns:
+        str: The absolute path to the resource file.
+    """
     try:
         base_path = sys._MEIPASS
     except AttributeError:
         base_path = os.path.dirname(os.path.abspath(__file__))
+        
     return os.path.join(base_path, relative_path)
+
+def user_data_path():
+    """Creates a directory and file in system files to store user data if they do not exist.
+
+    Returns:
+        str: The full path to the user_data.txt file
+    """
+    if sys.platform == "win32":
+        app_data_dir = os.path.join(os.getenv('APPDATA'), "rps-app")
+    else:
+        app_data_dir = os.path.join(os.path.expanduser("~"), ".local", "share", "rps-app")
+    
+    if not os.path.exists(app_data_dir):
+        os.makedirs(app_data_dir)
+    
+    user_data = os.path.join(app_data_dir, "user_data.txt")
+    
+    if not os.path.exists(user_data):
+        open(user_data, 'w').close()
+    
+    return user_data
 
 
 class Gui(ctk.CTk):
@@ -145,7 +174,6 @@ class Gui(ctk.CTk):
         self.create_profile_frame()
         self.create_main_frame()
         self.show_login_screen()
-
 
     def load_images(self):
         """Loads images used in the GUI from specified directories.
@@ -281,7 +309,7 @@ class Gui(ctk.CTk):
         The status frame displays the current state of connectivity.
         """
         # Determine the console text size based on the operating system
-        if platform.system() == "Windows":
+        if sys.platform == "win32":
             text_size = 11
         else:
             text_size = 10
@@ -1042,14 +1070,8 @@ class App:
         self.server = Server(self, self.gui, self.network)
         self.client = Client(self, self.gui, self.network)
 
-        # Relative path to user save data
-        if hasattr(sys, '_MEIPASS'):
-            # In a PyInstaller bundle, use paths relative to the _MEIPASS directory
-            self.user_data_path = resource_path(os.path.join("data", "user_data.txt"))
-        else:
-            # In development, use paths relative to the script's directory
-            self.user_data_path = resource_path(os.path.join("..", "data", "user_data.txt"))
-
+        # Path to user save data in system file storage
+        self.user_data_path = user_data_path()
         
         # User details and game variables
         self.user_profile = None

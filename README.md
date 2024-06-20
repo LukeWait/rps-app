@@ -62,15 +62,15 @@ To install and run the application from source:
       ```sh
       pip install -r requirements.txt
       ```
-     - **Linux**:
-       ```sh
-       sudo apt-get install python3-gi
-       sudo apt-get install python3-gi-cairo gir1.2-gtk-3.0
-       sudo apt-get install libcairo2-dev
-       sudo apt install libgirepository1.0-dev
-       pip install pygobject==3.42.2
-       pip install -r requirements.txt
-       ``` 
+    - **Linux**:
+      ```sh
+      sudo apt-get install python3-gi
+      sudo apt-get install python3-gi-cairo gir1.2-gtk-3.0
+      sudo apt-get install libcairo2-dev
+      sudo apt install libgirepository1.0-dev
+      pip install pygobject==3.42.2
+      pip install -r requirements.txt
+      ``` 
 
 4. Run the application:
     - **Windows**:
@@ -85,7 +85,15 @@ To install and run the application from source:
 ## Usage
 After running the application, you can log in with your username and password or create a new account. Once connected to the network, you can challenge other users to a game of Rock Paper Scissors and chat with them using the built-in messaging system.
 
-- **Add New User**: When playing for the first time you will need to create a profile. Click the `Add New User` button on the login page. Choose an avatar, username and password. Note: Password must contain at least 8 characters, 1 number, and 1 symbol. User information, including hashed passwords, is stored in a plain text file (user_data.txt) within the application directory.
+- **Add New User**: When playing for the first time you will need to create a profile. Click the `Add New User` button on the login page. Choose an avatar, username and password. Note: Passwords must contain at least 8 characters, 1 number, and 1 symbol. User information, including hashed passwords, is stored in a plain text file (user_data.txt) with the system files:
+    - **Windows**:
+      ```sh
+      C:\Users\<YourUsername>\AppData\Roaming\rps-app\user_data.txt
+      ```
+    - **Linux**:
+      ```sh
+      /home/<YourUsername>/.local/share/rps-app/user_data.txt
+      ```
 
 <p align="center">
   <img src="https://github.com/LukeWait/rps-app/raw/main/assets/screenshots/rps-app-new-user.png" alt="New User Screenshot" width="600">
@@ -120,7 +128,7 @@ After running the application, you can log in with your username and password or
 #### Windows
 Run the following command from the project main directory:
 ```sh
-pyinstaller --onefile --add-data "assets/images:assets/images" --add-data "assets/fonts:assets/fonts" --add-data "assets/audio:assets/audio" --add-data "data:data" --noconsole src/rps_app.py
+pyinstaller --onefile --add-data "assets/images:assets/images" --add-data "assets/fonts:assets/fonts" --add-data "assets/audio:assets/audio" --noconsole src/rps_app.py
 ```
 #### Linux
 For Linux, you need to create a hook-PIL.py file to handle the PIL library correctly. Follow these steps:
@@ -133,7 +141,7 @@ For Linux, you need to create a hook-PIL.py file to handle the PIL library corre
     ```
 2. Run the following command from the project main directory:
     ```sh
-    pyinstaller --onefile --add-data "assets/images:assets/images" --add-data "assets/fonts:assets/fonts" --add-data "assets/audio:assets/audio" --add-data "data:data" --additional-hooks-dir=. --noconsole src/rps_app.py
+    pyinstaller --onefile --add-data "assets/images:assets/images" --add-data "assets/fonts:assets/fonts" --add-data "assets/audio:assets/audio" --additional-hooks-dir=. --noconsole src/rps_app.py
     ```
 
 This will generate the executable in the `dist` directory. It will also create a `build` directory and `.spec` file. These are used in the build process and can be safely removed.
